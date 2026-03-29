@@ -6,6 +6,7 @@ import com.billing.billing.system.exception.UserException;
 import com.billing.billing.system.mapper.UserMapper;
 import com.billing.billing.system.model.User;
 import com.billing.billing.system.payload.dto.UserDTO;
+import com.billing.billing.system.payload.request.LoginRequest;
 import com.billing.billing.system.payload.response.AuthResponse;
 import com.billing.billing.system.repository.UserRepository;
 import com.billing.billing.system.service.impl.CustomUserImplementation;
@@ -67,7 +68,7 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public AuthResponse login(UserDTO userDTO) throws UserException {
+    public AuthResponse login(LoginRequest userDTO) throws UserException {
         String email = userDTO.getEmail();
         String password = userDTO.getPassword();
         Authentication authentication = authenticate(email, password);
@@ -84,6 +85,9 @@ public class AuthService implements IAuthService {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setJwt(jwt);
         authResponse.setMessage("you are login Successfully");
+        authResponse.setUser(UserMapper.toDTO(user));
+
+
 
         return authResponse;
     }
@@ -93,7 +97,7 @@ public class AuthService implements IAuthService {
         if (userDetails == null){
             throw new UserException("email does not exist");
         }
-        if (passwordEncoder.matches(password, userDetails.getPassword())){
+        if (!passwordEncoder.matches(password, userDetails.getPassword())){
             throw  new UserException("password does not match");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

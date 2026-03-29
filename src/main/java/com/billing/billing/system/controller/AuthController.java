@@ -3,6 +3,7 @@ package com.billing.billing.system.controller;
 
 import com.billing.billing.system.exception.UserException;
 import com.billing.billing.system.payload.dto.UserDTO;
+import com.billing.billing.system.payload.request.LoginRequest;
 import com.billing.billing.system.payload.response.AuthResponse;
 import com.billing.billing.system.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> signInHandler(@RequestBody UserDTO userDTO) throws UserException, Exception {
-        return ResponseEntity.ok(authService.login(userDTO));
+    public ResponseEntity<AuthResponse> signInHandler(@RequestBody LoginRequest loginRequest) throws UserException, Exception {
+        return ResponseEntity.ok(authService.login(loginRequest));
     }
 }

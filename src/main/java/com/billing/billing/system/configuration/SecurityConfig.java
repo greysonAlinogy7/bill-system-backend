@@ -27,7 +27,7 @@ public class SecurityConfig {
 
         return http
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(Authorize -> Authorize.requestMatchers("/api/user/**").authenticated()
+                .authorizeHttpRequests(Authorize -> Authorize.requestMatchers("/api/**").authenticated()
                         .requestMatchers("/api/super-admin/**").hasRole("ADMIN").anyRequest().permitAll()
                 ).addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -54,7 +54,7 @@ public class SecurityConfig {
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
                 cfg.setExposedHeaders(Arrays.asList("Authorization"));
                 cfg.setMaxAge(3600L);
-                return null;
+                return cfg;
             }
         };
     }

@@ -48,13 +48,13 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StoreDTO> updateStore(@PathVariable Long id, @RequestParam StoreStatus status) throws Exception {
-        return ResponseEntity.ok(storeService.moderateStore(id, status));
+    public ResponseEntity<StoreDTO> updateStore(@PathVariable Long id, @RequestBody StoreDTO storeDTO) throws Exception {
+        return ResponseEntity.ok(storeService.updateStore(id, storeDTO));
     }
 
     @PutMapping("/{id}/moderate")
-    public ResponseEntity<StoreDTO> moderateStore(@PathVariable Long id, @RequestBody StoreDTO storeDTO) throws Exception {
-        return ResponseEntity.ok(storeService.updateStore(id, storeDTO));
+    public ResponseEntity<StoreDTO> moderateStore(@PathVariable Long id, @RequestParam StoreStatus status) throws Exception {
+        return ResponseEntity.ok(storeService.moderateStore(id, status));
     }
 
     @DeleteMapping("/{id}")

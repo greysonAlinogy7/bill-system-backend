@@ -1,0 +1,25 @@
+package com.billing.billing.system.repository;
+
+import com.billing.billing.system.model.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByStoreId(Long storeId);
+
+    @Query(
+            "SELECT p FROM Product p " +
+                    "WHERE p.store.id = :storeId AND (" +
+                    "LOWER(p.name) LIKE LOWER (CONCAT('%', :query, '%'))"+
+                    "Or LOWER(p.brand) LIKE LOWER (CONCAT('%', :query, '%'))"+
+                    "Or LOWER(p.sku) LIKE LOWER (CONCAT('%', :query, '%'))"+
+                    ")"
+
+    )
+    List<Product> searchByKeyword(@Param("storeId") Long storeId, @Param("query") String keyword);
+}

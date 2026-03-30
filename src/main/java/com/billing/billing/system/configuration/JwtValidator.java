@@ -7,7 +7,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +29,7 @@ public class JwtValidator extends OncePerRequestFilter {
 
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
         if (jwt != null){
-            jwt= jwt.substring(7);
+            jwt= jwt.substring(7).trim();
             try {
                 SecretKey key = Keys.hmacShaKeyFor(JwtConstant.JWT_SECRETE.getBytes());
                 Claims claims = Jwts.parser()
@@ -42,7 +41,7 @@ public class JwtValidator extends OncePerRequestFilter {
                 String email = String.valueOf(claims.get("email", String.class));
                 String authorities = String.valueOf(claims.get("authorities", String.class));
 
-                List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+                List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_"+ authorities);
                 Authentication auth = new UsernamePasswordAuthenticationToken(email, null, auths);
 
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {

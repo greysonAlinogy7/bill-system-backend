@@ -26,11 +26,13 @@ public class CategoryService implements ICategoryService {
     public CategoryDTO createCategory(CategoryDTO categoryDTO) throws Exception {
         User user = userService.getCurrentUser();
         Store store = storeRepository.findById(categoryDTO.getStoreId()).orElseThrow(() -> new Exception("Store not found"));
+        checkAuthority(user, store);
         Category category = Category.builder()
                 .store(store)
                 .name(categoryDTO.getName())
                 .build();
-        return CategoryMapper.toDTO(category);
+        checkAuthority(user, store);
+        return CategoryMapper.toDTO(categoryRepository.save(category));
     }
 
     @Override
@@ -43,6 +45,7 @@ public class CategoryService implements ICategoryService {
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) throws Exception {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new Exception("category not found"));
         User user = userService.getCurrentUser();
+        checkAuthority(user, category.getStore());
         category.setName(categoryDTO.getName());
         return CategoryMapper.toDTO(categoryRepository.save(category));
     }
@@ -51,13 +54,14 @@ public class CategoryService implements ICategoryService {
     public void deleteCategory(Long id) throws Exception {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new Exception("category not found"));
         User user = userService.getCurrentUser();
+        checkAuthority(user, category.getStore());
         categoryRepository.delete(category);
 
     }
 
     private  void checkAuthority(User user, Store store) throws Exception {
         boolean isAdmin = user.getRole().equals(UserRole.ROLE_ADMIN);
-        boolean isManager = user.getRole().equals(UserRole.ROLE_STORE_MANAGER);
+        boolean isManager = user.getRole().equals(UserRole.ROLE_BRANCH_MANAGER);
         boolean isSameStore = user.equals(store.getStoreAdmin());
 
         if (!(isAdmin && isSameStore) && !isManager){

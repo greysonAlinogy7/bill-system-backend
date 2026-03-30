@@ -20,7 +20,7 @@ public class ProductDTO {
     private   Double mrp;
     private  String brand;
     private  String image;
-//    private   Category category;
+    private  CategoryDTO category;
     private Long categoryId;
     private Long storeId;
 

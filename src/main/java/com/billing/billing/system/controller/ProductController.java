@@ -1,6 +1,7 @@
 package com.billing.billing.system.controller;
 
 
+import com.billing.billing.system.model.Product;
 import com.billing.billing.system.model.User;
 import com.billing.billing.system.payload.dto.ProductDTO;
 import com.billing.billing.system.payload.response.ApiResponse;
@@ -22,7 +23,8 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @RequestHeader("Authorization") String jwt) throws Exception {
         User user = userService.getUserFromJwtToken(jwt);
-        return ResponseEntity.ok(productService.createProduct(productDTO, user));
+        ProductDTO product = productService.createProduct(productDTO, user);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping("/store/{storeId}")

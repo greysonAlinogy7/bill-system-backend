@@ -31,7 +31,9 @@ public class Product {
     private   Double mrp;
     private  String brand;
     private  String image;
-//    private   Category category;
+
+    @ManyToOne
+    private   Category category;
 
     @ManyToOne
     private  Store store;

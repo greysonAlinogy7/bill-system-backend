@@ -1,10 +1,11 @@
 package com.billing.billing.system.mapper;
 
 import com.billing.billing.system.model.Product;
+import com.billing.billing.system.model.Store;
 import com.billing.billing.system.payload.dto.ProductDTO;
 
 public class ProductMapper {
-    public ProductDTO toDTO(Product product){
+    public static ProductDTO toDTO(Product product){
         return ProductDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -20,10 +21,11 @@ public class ProductMapper {
                 .build();
     }
 
-    public Product toEntity(ProductDTO productDTO){
+    public static Product toEntity(ProductDTO productDTO, Store store){
         return Product.builder()
                 .name(productDTO.getName())
                 .sku(productDTO.getSku())
+                .store(store)
                 .description(productDTO.getDescription())
                 .mrp(productDTO.getMrp())
                 .sellingPrice(productDTO.getSellingPrice())

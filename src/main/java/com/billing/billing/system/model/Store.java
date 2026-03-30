@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Builder
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

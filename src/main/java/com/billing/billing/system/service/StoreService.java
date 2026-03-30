@@ -1,5 +1,6 @@
 package com.billing.billing.system.service;
 
+import com.billing.billing.system.domain.StoreStatus;
 import com.billing.billing.system.exception.UserException;
 import com.billing.billing.system.mapper.StoreMapper;
 import com.billing.billing.system.model.Store;
@@ -87,5 +88,13 @@ public class StoreService implements IStoreService {
         }
 
         return StoreMapper.toDTO(currentUser.getStore());
+    }
+
+    @Override
+    public StoreDTO moderateStore(Long id, StoreStatus status) throws Exception {
+        Store store = storeRepository.findById(id).orElseThrow(() -> new Exception("store not found"));
+        store.setStatus(status);
+        Store updatedStore = storeRepository.save(store);
+        return StoreMapper.toDTO(updatedStore);
     }
 }

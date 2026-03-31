@@ -11,7 +11,6 @@ import com.billing.billing.system.repository.StoreRepository;
 import com.billing.billing.system.service.impl.IBranchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,17 +23,20 @@ public class BranchService implements IBranchService {
     private  final UserService userService;
 
     @Override
-    public BranchDTO createBranch(BranchDTO branchDTO, User user) throws UserException {
+    public BranchDTO createBranch(BranchDTO branchDTO) throws UserException {
 
         User currentUser = userService.getCurrentUser();
         Store store = storeRepository.findByStoreAdminId(currentUser.getId());
+        if (store == null) {
+            throw new RuntimeException("No store found for this user. Create a store first.");
+        }
         Branch branch = BranchMapper.toEntity(branchDTO, store);
         Branch savedBranch = branchRepository.save(branch);
         return BranchMapper.toDTO(savedBranch);
     }
 
     @Override
-    public BranchDTO updateBranch(Long id, BranchDTO branchDTO, User user) throws Exception {
+    public BranchDTO updateBranch(Long id, BranchDTO branchDTO) throws Exception {
         Branch existing = branchRepository.findById(id).orElseThrow(() -> new Exception("branch does not exist"));
         existing.setName(branchDTO.getName());
         existing.setWorkingDays(branchDTO.getWorkingDays());

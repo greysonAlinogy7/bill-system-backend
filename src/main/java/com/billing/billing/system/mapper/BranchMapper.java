@@ -1,4 +1,38 @@
 package com.billing.billing.system.mapper;
 
+import com.billing.billing.system.model.Branch;
+import com.billing.billing.system.model.Store;
+import com.billing.billing.system.payload.dto.BranchDTO;
+
 public class BranchMapper {
+    public  static BranchDTO toDTO(Branch branch){
+        return BranchDTO.builder()
+                .id(branch.getId())
+                .name(branch.getName())
+                .address(branch.getAddress())
+                .phone(branch.getPhone())
+                .email(branch.getEmail())
+                .closeTime(branch.getCloseTime())
+                .openTime(branch.getOpenTime())
+                .workingDays(branch.getWorkingDays())
+                .storeId(branch.getStore() != null ? branch.getStore().getId() : null)
+                .createdAt(branch.getCreatedAt())
+                .updateAt(branch.getUpdateAt())
+                .build();
+    }
+
+    public static Branch toEntity(BranchDTO branchDTO, Store store){
+        return Branch.builder()
+                .name(branchDTO.getName())
+                .address(branchDTO.getAddress())
+                .store(store)
+                .email(branchDTO.getEmail())
+                .phone(branchDTO.getPhone())
+                .closeTime(branchDTO.getCloseTime())
+                .openTime(branchDTO.getOpenTime())
+                .workingDays(branchDTO.getWorkingDays())
+                .createdAt(branchDTO.getCreatedAt())
+                .updateAt(branchDTO.getUpdateAt())
+                .build();
+    }
 }

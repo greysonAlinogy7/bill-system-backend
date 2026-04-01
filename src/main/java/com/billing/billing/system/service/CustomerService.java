@@ -24,27 +24,32 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public Customer updateCustomer(Long id, Customer customer) throws Exception {
-        Customer customer1 = customerRepository.findById(id).orElseThrow(() -> new Exception("customer not found"));
-        return null;
+        Customer customerUpdate = customerRepository.findById(id).orElseThrow(() -> new Exception("customer not found"));
+        customerUpdate.setFirstName(customer.getFirstName());
+        customerUpdate.setEmail(customer.getEmail());
+        customerUpdate.setPhone(customer.getPhone());
+        return customerRepository.save(customerUpdate);
     }
 
     @Override
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(Long id) throws Exception {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new Exception("customer not found"));
+        customerRepository.delete(customer);
 
     }
 
     @Override
-    public Customer getCustomer(Long id) {
-        return null;
+    public Customer getCustomer(Long id) throws Exception {
+        return customerRepository.findById(id).orElseThrow(() -> new Exception("customer not found"));
     }
 
     @Override
     public List<Customer> grtAllsCustomers() {
-        return List.of();
+        return customerRepository.findAll();
     }
 
     @Override
     public List<Customer> searchCustomer(String keyword) {
-        return List.of();
+        return customerRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
     }
 }

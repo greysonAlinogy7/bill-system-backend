@@ -1,13 +1,10 @@
 package com.billing.billing.system.service;
 
 import com.billing.billing.system.model.Customer;
-import com.billing.billing.system.payload.dto.CategoryDTO;
 import com.billing.billing.system.repository.CustomerRepository;
-import com.billing.billing.system.service.impl.ICategoryService;
 import com.billing.billing.system.service.impl.ICustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -25,7 +22,7 @@ public class CustomerService implements ICustomerService {
     @Override
     public Customer updateCustomer(Long id, Customer customer) throws Exception {
         Customer customerUpdate = customerRepository.findById(id).orElseThrow(() -> new Exception("customer not found"));
-        customerUpdate.setFirstName(customer.getFirstName());
+        customerUpdate.setFullName(customer.getFullName());
         customerUpdate.setEmail(customer.getEmail());
         customerUpdate.setPhone(customer.getPhone());
         return customerRepository.save(customerUpdate);

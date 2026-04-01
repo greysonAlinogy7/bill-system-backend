@@ -7,7 +7,6 @@ import com.billing.billing.system.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -40,7 +39,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.grtAllsCustomers());
     }
 
-    @GetMapping()
+    @GetMapping("/search")
     public ResponseEntity<List<Customer>> searchCustomer(@RequestParam String keyword){
         return ResponseEntity.ok(customerService.searchCustomer(keyword));
     }

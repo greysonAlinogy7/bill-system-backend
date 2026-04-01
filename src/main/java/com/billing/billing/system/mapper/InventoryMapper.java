@@ -13,6 +13,7 @@ public class InventoryMapper {
                 .productId(inventory.getProduct().getId())
                 .product(ProductMapper.toDTO(inventory.getProduct()))
                 .quantity(inventory.getQuantity())
+                .lastUpdate(inventory.getLastUpdate())
                 .build();
     }
 

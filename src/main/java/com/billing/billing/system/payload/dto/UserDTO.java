@@ -12,6 +12,8 @@ public class UserDTO {
     private  String email;
     private  String phone;
     private  String password;
+    private Long branchId;
+    private Long storeId;
     private UserRole role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

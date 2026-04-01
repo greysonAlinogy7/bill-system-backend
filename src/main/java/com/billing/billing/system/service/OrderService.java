@@ -5,6 +5,7 @@ import com.billing.billing.system.domain.PaymentType;
 import com.billing.billing.system.mapper.OrderMapper;
 import com.billing.billing.system.model.*;
 import com.billing.billing.system.payload.dto.OrderDTO;
+import com.billing.billing.system.repository.OrderItemRepository;
 import com.billing.billing.system.repository.OrderRepository;
 import com.billing.billing.system.repository.ProductRepository;
 import com.billing.billing.system.service.impl.IOrderService;
@@ -22,6 +23,7 @@ public class OrderService implements IOrderService {
     private  final OrderRepository orderRepository;
     private  final UserService userService;
     private  final ProductRepository productRepository;
+    private  final OrderItemRepository orderItemRepository;
 
 
 
@@ -42,12 +44,13 @@ public class OrderService implements IOrderService {
 
         List<OrderItem> orderItems = orderDTO.getItems().stream().map(itemsDto ->{
             Product product = productRepository.findById(itemsDto.getProductId()).orElseThrow(() -> new EntityNotFoundException("product not found"));
-            return OrderItem.builder()
+            OrderItem orderItem = OrderItem.builder()
                     .product(product)
                     .quantity(itemsDto.getQuantity())
                     .price(product.getSellingPrice() * itemsDto.getQuantity())
                     .order(order)
                     .build();
+            return orderItem;
         }
         ).toList();
         double total = orderItems.stream().mapToDouble(OrderItem::getPrice).sum();

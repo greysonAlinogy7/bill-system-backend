@@ -29,7 +29,7 @@ public class RefundService implements IRefundService {
     public RefundDTO createRefund(RefundDTO refund) throws Exception {
         User cashier = userService.getCurrentUser();
 
-        Order order = orderRepository.findById(refund.getId()).orElseThrow(() -> new Exception("order not found"));
+        Order order = orderRepository.findById(refund.getOrderId()).orElseThrow(() -> new Exception("order not found"));
         Branch branch = order.getBranch();
         Refund  createRefund = Refund.builder()
                 .order(order)

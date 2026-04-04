@@ -1,5 +1,6 @@
 package com.billing.billing.system.service;
 
+import com.billing.billing.system.domain.PaymentType;
 import com.billing.billing.system.exception.UserException;
 import com.billing.billing.system.mapper.ShiftReportMapper;
 import com.billing.billing.system.model.*;
@@ -12,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,8 +64,63 @@ public class ShiftService implements IShiftService {
         shiftReport.setTotalSales(totalSales);
         shiftReport.setTotalOrders(totalOrders);
         shiftReport.setNetSales(netSales);
+        shiftReport.setRecentOrders(getRecentOrders(orders));
+        shiftReport.setTopSellingProducts(getTopSellingProducts(orders));
+        shiftReport.setPaymentSummaries(getPaymentSummaries(orders, totalSales));
+        shiftReport.setRefunds(refunds);
 
-        return null;
+        ShiftReport savedReport = shiftRepository.save(shiftReport);
+
+        return ShiftReportMapper.toDTO(savedReport);
+    }
+
+    private  List<PaymentSummary>  getPaymentSummaries(List<Order> orders, double totalSales) {
+        Map<PaymentType, List<Order>> grouped = orders.stream()
+                .collect(Collectors.groupingBy(order -> order.getType() != null ? order.getType() : PaymentType.CASH));
+
+        List<PaymentSummary> summaries = new ArrayList<>();
+
+        for (Map.Entry<PaymentType, List<Order>> entry : grouped.entrySet()){
+            double amount = entry.getValue().stream().mapToDouble(Order::getTotalAmount).sum();
+
+            int transaction = entry.getValue().size();
+            double percentage =(amount/totalSales)*100;
+
+            PaymentSummary ps = new PaymentSummary();
+            ps.setPaymentType(entry.getKey());
+            ps.setTotalAmount(amount);
+            ps.setTransactionCount(transaction);
+            ps.setPercentage(percentage);
+            summaries.add(ps);
+
+
+        }
+        return summaries;
+
+    }
+
+    private List<Product> getTopSellingProducts(List<Order> orders) {
+        Map<Product, Integer> productSale = new HashMap<>();
+
+
+
+
+        for (Order order:orders){
+            for (OrderItem item : order.getItems()){
+                Product product = item.getProduct();
+                productSale.put(product, productSale.getOrDefault(product, 0)+item.getQuantity());
+            }
+        }
+        return productSale.entrySet()
+                .stream()
+                .sorted((a,b)-> b.getValue().compareTo(a.getValue()))
+                .limit(5)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    private List<Order> getRecentOrders(List<Order> orders) {
+        return orders.stream().sorted(Comparator.comparing(Order::getCreatedAt).reversed()).limit(5).collect(Collectors.toList());
     }
 
     @Override

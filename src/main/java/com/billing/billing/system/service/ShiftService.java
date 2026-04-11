@@ -8,6 +8,7 @@ import com.billing.billing.system.payload.dto.ShiftReportDTO;
 import com.billing.billing.system.repository.OrderRepository;
 import com.billing.billing.system.repository.RefundRepository;
 import com.billing.billing.system.repository.ShiftRepository;
+import com.billing.billing.system.repository.UserRepository;
 import com.billing.billing.system.service.impl.IShiftService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class ShiftService implements IShiftService {
     private  final UserService userService;
     private  final RefundRepository refundRepository;
     private  final OrderRepository orderRepository;
+    private  final UserRepository userRepository;
+
 
     @Override
     public ShiftReportDTO startShift(Long cashierId, Long branchId, LocalDateTime shiftStart) throws Exception {
@@ -179,7 +182,11 @@ public class ShiftService implements IShiftService {
     }
 
     @Override
-    public ShiftReportDTO getShiftByCashierAndDate(Long cashierId, LocalDateTime date) {
-        return null;
+    public ShiftReportDTO getShiftByCashierAndDate(Long cashierId, LocalDateTime date) throws Exception {
+        User cashier = userRepository.findById(cashierId).orElseThrow(() -> new Exception("cashier not found"));
+        LocalDateTime start = date.withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime end = date.withHour(23).withMinute(59).withSecond(59);
+        ShiftReport shiftReport = shiftRepository.findByCashierAndShiftStartBetween(cashier, start, end).orElseThrow(() -> new Exception("shift report not found for cashier"));
+        return ShiftReportMapper.toDTO(shiftReport);
     }
 }

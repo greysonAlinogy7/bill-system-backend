@@ -28,9 +28,9 @@ public class ShiftService implements IShiftService {
 
 
     @Override
-    public ShiftReportDTO startShift(Long cashierId, Long branchId, LocalDateTime shiftStart) throws Exception {
+    public ShiftReportDTO startShift() throws Exception {
         User currentUser = userService.getCurrentUser();
-        shiftStart = LocalDateTime.now();
+       LocalDateTime shiftStart = LocalDateTime.now();
         LocalDateTime startOfDays = shiftStart.withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endOfDay=shiftStart.withHour(23).withMinute(59).withSecond(59);
 
